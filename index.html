@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>横須賀市地域資源情報管理支援システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #004080;
+            --accent-color: #ff9900;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --text-color: #333333;
+            --white: #ffffff;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .header-links a {
+            margin-left: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* ナビゲーション */
+        nav {
+            background-color: var(--primary-color);
+            padding: 10px 0;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+        }
+
+        nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        nav a {
+            color: var(--white);
+            display: block;
+            padding: 8px 0;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        /* バナー */
+        .banner {
+            width: 100%;
+            margin: 20px 0;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        /* お知らせエリア */
+        .announcements {
+            background-color: var(--white);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title h2 {
+            font-size: 1.4rem;
+        }
+
+        .section-title a {
+            font-size: 0.9rem;
+        }
+
+        .announcement-list {
+            list-style: none;
+        }
+
+        .announcement-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .announcement-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: var(--accent-color);
+            color: var(--white);
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        /* クイック検索 */
+        .quick-search {
+            background-color: var(--white);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-form input,
+        .search-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+        }
+
+        .search-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .search-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* 最近更新されたリソース */
+        .recent-resources {
+            background-color: var(--white);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .resource-list {
+            list-style: none;
+        }
+
+        .resource-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        .resource-update-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* イベントカレンダー */
+        .event-calendar {
+            background-color: var(--white);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .calendar-month {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .calendar-navigation button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .calendar-day {
+            height: 30px;
+            border: 1px solid var(--medium-gray);
+            text-align: center;
+            padding: 5px;
+            position: relative;
+        }
+
+        .calendar-day.has-event {
+            background-color: rgba(0, 102, 204, 0.1);
+            cursor: pointer;
+        }
+
+        .calendar-day.has-event:hover {
+            background-color: rgba(0, 102, 204, 0.2);
+        }
+
+        .event-indicator {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .upcoming-events {
+            margin-top: 15px;
+        }
+
+        .upcoming-event {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .upcoming-event:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        /* フッター */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 30px 0;
+            margin-top: 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--white);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav li {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="yokosuka-city.png" alt="横須賀市ロゴ">
+                    <h1>横須賀市地域資源情報管理支援システム</h1>
+                </div>
+                <div class="header-links">
+                    <a href="yokosuka-staff-dashboard.html">ログイン</a>
+                    <a href="#">ヘルプ</a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="yokosuka-staff-dashboard.html" class="active">ホーム</a></li>
+                    <li><a href="yokosuka-resource-search.html">資源検索</a></li>
+                    <li><a href="#">地域マップ</a></li>
+                    <li><a href="#">イベントカレンダー</a></li>
+                    <li><a href="#">よくある質問</a></li>
+                    <li><a href="#">お問い合わせ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="banner">
+            <img src="banner.png" alt="バナー画像">
+        </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <section class="announcements">
+                    <div class="section-title">
+                        <h2>市からのお知らせ</h2>
+                        <a href="#">すべて表示 <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <ul class="announcement-list">
+                        <li class="announcement-item">
+                            <span class="announcement-date">2025年5月7日</span>
+                            <span class="announcement-tag">重要</span>
+                            <a href="#">「横須賀市地域資源情報管理支援システム」の運用開始について</a>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-date">2025年5月5日</span>
+                            <span class="announcement-tag">イベント</span>
+                            <a href="#">地域包括ケアシステム推進フォーラムの開催について</a>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-date">2025年5月3日</span>
+                            <span class="announcement-tag">お知らせ</span>
+                            <a href="#">福祉サービス事業所向け説明会の日程について</a>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-date">2025年5月1日</span>
+                            <span class="announcement-tag">募集</span>
+                            <a href="#">ボランティア活動参加者募集のお知らせ</a>
+                        </li>
+                        <li class="announcement-item">
+                            <span class="announcement-date">2025年4月28日</span>
+                            <span class="announcement-tag">お知らせ</span>
+                            <a href="#">高齢者向け健康相談会の開催スケジュールについて</a>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="recent-resources">
+                    <div class="section-title">
+                        <h2>最近更新された資源情報</h2>
+                        <a href="#">すべて表示 <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <ul class="resource-list">
+                        <li class="resource-item">
+                            <span class="resource-type">高齢者支援</span>
+                            <a href="#">横須賀シニアサポートセンター</a>
+                            <p>住所: 横須賀市小川町11-5</p>
+                            <span class="resource-update-date">更新日: 2025年5月8日</span>
+                        </li>
+                        <li class="resource-item">
+                            <span class="resource-type">障害福祉</span>
+                            <a href="#">ウェルビーイング横須賀</a>
+                            <p>住所: 横須賀市汐入町3-17</p>
+                            <span class="resource-update-date">更新日: 2025年5月7日</span>
+                        </li>
+                        <li class="resource-item">
+                            <span class="resource-type">子育て支援</span>
+                            <a href="#">よこすか子育てプラザ</a>
+                            <p>住所: 横須賀市本町2-8</p>
+                            <span class="resource-update-date">更新日: 2025年5月6日</span>
+                        </li>
+                        <li class="resource-item">
+                            <span class="resource-type">介護サービス</span>
+                            <a href="#">ケアホーム三笠</a>
+                            <p>住所: 横須賀市三笠町6-21</p>
+                            <span class="resource-update-date">更新日: 2025年5月5日</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="right-column">
+                <section class="quick-search">
+                    <div class="section-title">
+                        <h2>クイック検索</h2>
+                    </div>
+                    <form class="search-form" id="quick-search-form">
+                        <input type="text" placeholder="キーワードを入力" id="search-keyword">
+                        <select id="search-category">
+                            <option value="">カテゴリを選択</option>
+                            <option value="elderly">高齢者支援</option>
+                            <option value="disability">障害福祉</option>
+                            <option value="childcare">子育て支援</option>
+                            <option value="medical">医療・健康</option>
+                            <option value="community">地域活動</option>
+                            <option value="welfare">福祉サービス</option>
+                            <option value="nursing">介護サービス</option>
+                            <option value="consultation">相談窓口</option>
+                        </select>
+                        <select id="search-area">
+                            <option value="">地域を選択</option>
+                            <option value="central">中央地区</option>
+                            <option value="north">北部地区</option>
+                            <option value="south">南部地区</option>
+                            <option value="west">西部地区</option>
+                            <option value="east">東部地区</option>
+                        </select>
+                        <button type="submit">検索 <i class="fas fa-search"></i></button>
+                    </form>
+                </section>
+
+                <section class="event-calendar">
+                    <div class="section-title">
+                        <h2>イベントカレンダー</h2>
+                        <a href="#">すべて表示 <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <div class="calendar-navigation">
+                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                        <div class="calendar-month" id="current-month">2025年5月</div>
+                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid">
+                        <div class="calendar-day-header">日</div>
+                        <div class="calendar-day-header">月</div>
+                        <div class="calendar-day-header">火</div>
+                        <div class="calendar-day-header">水</div>
+                        <div class="calendar-day-header">木</div>
+                        <div class="calendar-day-header">金</div>
+                        <div class="calendar-day-header">土</div>
+                        <!-- カレンダーの日付はJavaScriptで動的に生成 -->
+                    </div>
+                    <div class="upcoming-events">
+                        <h3>今週のイベント</h3>
+                        <div class="upcoming-event">
+                            <div class="event-date">5月10日(土) 10:00〜12:00</div>
+                            <div class="event-title"><a href="#">高齢者健康相談会</a></div>
+                            <div class="event-location">横須賀市福祉会館</div>
+                        </div>
+                        <div class="upcoming-event">
+                            <div class="event-date">5月12日(月) 13:30〜15:30</div>
+                            <div class="event-title"><a href="#">子育て支援講座</a></div>
+                            <div class="event-location">横須賀市中央公民館</div>
+                        </div>
+                        <div class="upcoming-event">
+                            <div class="event-date">5月15日(木) 14:00〜16:00</div>
+                            <div class="event-title"><a href="#">地域ボランティア説明会</a></div>
+                            <div class="event-location">横須賀市社会福祉協議会</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="banner">
+            <img src="banner.png" alt="バナー画像（下部）">
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>横須賀市地域資源情報管理支援システム</h3>
+                    <p>このシステムは、横須賀市の地域包括ケアシステム実現のため、多様な地域資源情報を一元管理し、市民の皆様に提供するためのものです。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>リンク</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">横須賀市公式ウェブサイト</a></li>
+                        <li><a href="#">横須賀市福祉部</a></li>
+                        <li><a href="#">地域包括支援センター</a></li>
+                        <li><a href="#">サイトマップ</a></li>
+                        <li><a href="#">よくある質問</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>お問い合わせ</h3>
+                    <p>横須賀市民生局福祉児童部地域福祉課</p>
+                    <p>住所: 横須賀市小川町11番地</p>
+                    <p>TEL: 046-XXX-XXXX</p>
+                    <p>E-mail: chiiki-fukushi@city.yokosuka.lg.jp</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 横須賀市 All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // カレンダー機能の実装
+            const calendarGrid = document.getElementById('calendar-grid');
+            const currentMonthElement = document.getElementById('current-month');
+            const prevMonthButton = document.getElementById('prev-month');
+            const nextMonthButton = document.getElementById('next-month');
+
+            // 現在の日付を取得
+            let currentDate = new Date();
+            
+            // イベントがある日付の配列（サンプル）
+            const eventsData = [
+                { date: new Date(2025, 4, 10), title: '高齢者健康相談会' },
+                { date: new Date(2025, 4, 12), title: '子育て支援講座' },
+                { date: new Date(2025, 4, 15), title: '地域ボランティア説明会' },
+                { date: new Date(2025, 4, 20), title: '介護予防セミナー' },
+                { date: new Date(2025, 4, 22), title: '障害者就労支援相談会' }
+            ];
+
+            // カレンダーを描画する関数
+            function renderCalendar(date) {
+                // 年と月を設定
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                
+                // 月の最初の日の曜日（0: 日曜日, 1: 月曜日, ..., 6: 土曜日）
+                const firstDay = new Date(year, month, 1).getDay();
+                
+                // 月の日数
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                // カレンダーを空にする
+                while (calendarGrid.children.length > 7) { // 曜日のヘッダー以外を削除
+                    calendarGrid.removeChild(calendarGrid.lastChild);
+                }
+                
+                // 月の表示を更新
+                currentMonthElement.textContent = `${year}年${month + 1}月`;
+                
+                // 月の最初の日までの空白セルを追加
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'calendar-day';
+                    calendarGrid.appendChild(emptyCell);
+                }
+                
+                // 月の日数分のセルを追加
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'calendar-day';
+                    dayCell.textContent = day;
+                    
+                    // イベントがある日にマークを付ける
+                    const currentDateCheck = new Date(year, month, day);
+                    const hasEvent = eventsData.some(event => 
+                        event.date.getDate() === currentDateCheck.getDate() && 
+                        event.date.getMonth() === currentDateCheck.getMonth() && 
+                        event.date.getFullYear() === currentDateCheck.getFullYear()
+                    );
+                    
+                    if (hasEvent) {
+                        dayCell.classList.add('has-event');
+                        const eventIndicator = document.createElement('div');
+                        eventIndicator.className = 'event-indicator';
+                        dayCell.appendChild(eventIndicator);
+                        
+                        // イベントがある日をクリックしたときのイベント
+                        dayCell.addEventListener('click', function() {
+                            // 実際のアプリケーションではここでイベント詳細ページに移動したり
+                            // ポップアップを表示したりする処理を追加
+                            alert(`${year}年${month + 1}月${day}日のイベント情報を表示します`);
+                        });
+                    }
+                    
+                    calendarGrid.appendChild(dayCell);
+                }
+            }
+
+            // 前の月ボタンのイベントリスナー
+            prevMonthButton.addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar(currentDate);
+            });
+
+            // 次の月ボタンのイベントリスナー
+            nextMonthButton.addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar(currentDate);
+            });
+
+            // 検索フォームのイベントリスナー
+            const searchForm = document.getElementById('quick-search-form');
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const keyword = document.getElementById('search-keyword').value;
+                const category = document.getElementById('search-category').value;
+                const area = document.getElementById('search-area').value;
+                
+                // 実際のアプリケーションではここで検索結果ページに移動する処理を追加
+                alert(`キーワード: ${keyword || 'なし'}\nカテゴリ: ${category || 'なし'}\n地域: ${area || 'なし'}\nの検索を実行します`);
+            });
+
+            // 初期カレンダーの描画
+            renderCalendar(currentDate);
+        });
+    </script>
+</body>
+</html>

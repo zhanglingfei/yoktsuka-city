@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>横須賀市地域資源情報管理支援システム - 関係者ポータル</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #004080;
+            --accent-color: #ff9900;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --text-color: #333333;
+            --white: #ffffff;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            color: var(--secondary-color);
+        }
+
+        .staff-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .staff-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .staff-details {
+            margin-right: 15px;
+        }
+
+        .staff-name {
+            font-weight: bold;
+        }
+
+        .staff-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .logout-btn {
+            background-color: var(--light-gray);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--medium-gray);
+        }
+
+        /* ナビゲーション */
+        nav {
+            background-color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .main-menu li {
+            position: relative;
+        }
+
+        .main-menu a {
+            color: var(--white);
+            display: block;
+            padding: 15px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .main-menu a:hover, .main-menu a.active {
+            background-color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-menu a i {
+            margin-right: 8px;
+        }
+
+        .submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 220px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            list-style: none;
+            display: none;
+            z-index: 10;
+        }
+
+        .submenu a {
+            color: var(--text-color);
+            padding: 10px 15px;
+            font-weight: normal;
+        }
+
+        .submenu a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+
+        .main-menu li:hover .submenu {
+            display: block;
+        }
+
+        .utility-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .utility-menu a {
+            color: var(--white);
+            display: block;
+            padding: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .utility-menu a:hover {
+            background-color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .notification-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            font-size: 0.7rem;
+            line-height: 18px;
+            margin-left: 5px;
+        }
+
+        /* メインコンテンツ */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+        }
+
+        .card-header .card-actions a {
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* お知らせカード */
+        .announcements-card {
+            grid-column: span 3;
+        }
+
+        .announcement-item {
+            padding: 12px 15px;
+            border-left: 4px solid var(--accent-color);
+            background-color: var(--light-gray);
+            margin-bottom: 10px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .announcement-item.important {
+            border-left-color: var(--danger-color);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .announcement-title {
+            font-weight: bold;
+        }
+
+        .announcement-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* 機能カード */
+        .quick-functions {
+            grid-column: span 1;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .function-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .function-link {
+            flex: 1;
+        }
+
+        /* タスクカード */
+        .tasks-card {
+            grid-column: span 1;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-priority {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .priority-high {
+            background-color: var(--danger-color);
+        }
+
+        .priority-medium {
+            background-color: var(--warning-color);
+        }
+
+        .priority-low {
+            background-color: var(--info-color);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        /* イベントカード */
+        .events-card {
+            grid-column: span 1;
+        }
+
+        .event-list {
+            list-style: none;
+        }
+
+        .event-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 3px;
+        }
+
+        .event-details {
+            margin-top: 3px;
+            font-size: 0.9rem;
+        }
+
+        /* 統計カード */
+        .statistics-card {
+            grid-column: span 3;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: var(--light-gray);
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chart {
+            height: 250px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        /* ログイン後のウェルカムバナー */
+        .welcome-banner {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .welcome-message h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .welcome-actions {
+            display: flex;
+        }
+
+        .welcome-btn {
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .welcome-btn:hover {
+            background-color: var(--light-gray);
+        }
+
+        /* フッター */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .announcements-card, .statistics-card, .quick-functions, .tasks-card, .events-card {
+                grid-column: span 1;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .chart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .main-menu, .utility-menu {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .submenu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+            }
+
+            .main-menu li:hover .submenu {
+                display: none;
+            }
+
+            .main-menu li.open .submenu {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="yokosuka-city.png" alt="横須賀市ロゴ">
+                    <h1>横須賀市地域資源情報管理支援システム</h1>
+                </div>
+                <div class="staff-info">
+                    <div class="staff-avatar">YT</div>
+                    <div class="staff-details">
+                        <div class="staff-name">山田 太郎</div>
+                        <div class="staff-role">地域福祉課</div>
+                    </div>
+                    <button class="logout-btn">ログアウト</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <ul class="main-menu">
+                    <li>
+                        <a href="yokosuka-staff-dashboard.html" class="active"><i class="fas fa-home"></i> ホーム</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-database"></i> 資源管理</a>
+                        <ul class="submenu">
+                            <li><a href="yokosuka-resource-search.html">資源検索</a></li>
+                            <li><a href="#">資源登録・編集</a></li>
+                            <li><a href="#">一括インポート・エクスポート</a></li>
+                            <li><a href="#">情報審査</a></li>
+                            <li><a href="#">アクセス記録</a></li>
+                            <li><a href="#">未更新資源管理</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chart-bar"></i> データ統計</a>
+                        <ul class="submenu">
+                            <li><a href="#">資源分布統計</a></li>
+                            <li><a href="#">アクセス統計</a></li>
+                            <li><a href="#">カスタムレポート</a></li>
+                            <li><a href="#">データ可視化</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-comments"></i> コミュニケーション</a>
+                        <ul class="submenu">
+                            <li><a href="#">グループ連絡</a></li>
+                            <li><a href="#">電子掲示板</a></li>
+                            <li><a href="#">メッセージ通知</a></li>
+                            <li><a href="#">日程調整</a></li>
+                            <li><a href="#">アンケート</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-calendar-alt"></i> 活動管理</a>
+                        <ul class="submenu">
+                            <li><a href="#">活動カレンダー</a></li>
+                            <li><a href="#">活動作成・編集</a></li>
+                            <li><a href="#">活動統計</a></li>
+                            <li><a href="#">団体活動記録</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-cog"></i> システム管理</a>
+                        <ul class="submenu">
+                            <li><a href="#">アカウント管理</a></li>
+                            <li><a href="#">権限設定</a></li>
+                            <li><a href="#">項目設定</a></li>
+                            <li><a href="#">システム設定</a></li>
+                            <li><a href="#">ログ閲覧</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="utility-menu">
+                    <li><a href="#" title="通知"><i class="fas fa-bell"></i><span class="notification-badge">5</span></a></li>
+                    <li><a href="#" title="ヘルプ"><i class="fas fa-question-circle"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <div class="welcome-message">
+                <h2>おはようございます、山田さん</h2>
+                <p>本日は2025年5月9日（金）です。未処理のタスクが3件あります。</p>
+            </div>
+            <div class="welcome-actions">
+                <button class="welcome-btn"><i class="fas fa-search"></i> 資源検索</button>
+                <button class="welcome-btn"><i class="fas fa-plus"></i> 資源登録</button>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <section class="dashboard-card announcements-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-bullhorn"></i> お知らせ</h2>
+                    <div class="card-actions">
+                        <a href="#" class="create-announcement">新規作成</a>
+                        <a href="#" class="view-all">すべて表示</a>
+                    </div>
+                </div>
+                <div class="announcement-item important">
+                    <div class="announcement-header">
+                        <div class="announcement-title">システムアップデートのお知らせ</div>
+                        <div class="announcement-date">2025/05/08</div>
+                    </div>
+                    <div class="announcement-content">
+                        5月15日（木）午後11時〜翌朝5時にかけてシステムメンテナンスを実施します。この間、システムは利用できません。ご了承ください。
+                    </div>
+                </div>
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <div class="announcement-title">福祉サービス事業所情報の一斉更新について</div>
+                        <div class="announcement-date">2025/05/07</div>
+                    </div>
+                    <div class="announcement-content">
+                        6月1日から新しい福祉サービス事業所情報の一斉更新を開始します。各事業所の担当者は、更新依頼メールに従って情報を更新してください。
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-card quick-functions">
+                <div class="card-header">
+                    <h2><i class="fas fa-bolt"></i> クイック機能</h2>
+                </div>
+                <ul class="function-list">
+                    <li class="function-item">
+                        <div class="function-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="function-link">
+                            <a href="#">資源検索</a>
+                            <p>地域資源情報を検索します</p>
+                        </div>
+                    </li>
+                    <li class="function-item">
+                        <div class="function-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="function-link">
+                            <a href="#">資源新規登録</a>
+                            <p>新しい地域資源を登録します</p>
+                        </div>
+                    </li>
+                    <li class="function-item">
+                        <div class="function-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="function-link">
+                            <a href="#">グループ連絡</a>
+                            <p>関係者とメッセージを共有します</p>
+                        </div>
+                    </li>
+                    <li class="function-item">
+                        <div class="function-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="function-link">
+                            <a href="#">データエクスポート</a>
+                            <p>検索結果をExcelなどで出力します</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="dashboard-card tasks-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-tasks"></i> タスク</h2>
+                    <div class="card-actions">
+                        <a href="#">すべて表示</a>
+                    </div>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-priority priority-high"></div>
+                        <div class="task-content">
+                            <div class="task-title">未更新の介護サービス事業所情報を確認</div>
+                            <div class="task-meta">期限: 2025/05/11 | 担当: 山田 太郎</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-priority priority-medium"></div>
+                        <div class="task-content">
+                            <div class="task-title">地域包括支援センターのアンケート回答を集計</div>
+                            <div class="task-meta">期限: 2025/05/15 | 担当: 山田 太郎</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-priority priority-low"></div>
+                        <div class="task-content">
+                            <div class="task-title">月次利用状況レポートを作成</div>
+                            <div class="task-meta">期限: 2025/05/20 | 担当: 山田 太郎</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-priority priority-low"></div>
+                        <div class="task-content">
+                            <div class="task-title">新規アカウント申請を確認</div>
+                            <div class="task-meta">期限: 2025/05/23 | 担当: システム管理者</div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="dashboard-card events-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar"></i> 今週のイベント</h2>
+                    <div class="card-actions">
+                        <a href="#">カレンダー表示</a>
+                    </div>
+                </div>
+                <ul class="event-list">
+                    <li class="event-item">
+                        <div class="event-date">5月10日（土）10:00〜12:00</div>
+                        <div class="event-title"><a href="#">高齢者健康相談会</a></div>
+                        <div class="event-details">場所: 横須賀市福祉会館</div>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">5月12日（月）13:30〜15:30</div>
+                        <div class="event-title"><a href="#">子育て支援講座</a></div>
+                        <div class="event-details">場所: 横須賀市中央公民館</div>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">5月15日（木）14:00〜16:00</div>
+                        <div class="event-title"><a href="#">地域ボランティア説明会</a></div>
+                        <div class="event-details">場所: 横須賀市社会福祉協議会</div>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">5月16日（金）9:30〜11:30</div>
+                        <div class="event-title"><a href="#">介護予防体操教室</a></div>
+                        <div class="event-details">場所: 横須賀市総合体育館</div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="dashboard-card statistics-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-pie"></i> 統計サマリー</h2>
+                    <div class="card-actions">
+                        <a href="#">詳細レポート</a>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-title">登録資源数</div>
+                        <div class="stat-value">1,392</div>
+                        <div class="stat-trend">先月比 +24</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">月間閲覧数</div>
+                        <div class="stat-value">4,567</div>
+                        <div class="stat-trend">先月比 +12.5%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">登録ユーザー数</div>
+                        <div class="stat-value">328</div>
+                        <div class="stat-trend">先月比 +5</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">未更新資源</div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-trend">先月比 -12</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart" id="resource-by-category">
+                        資源分類別グラフがここに表示されます
+                    </div>
+                    <div class="chart" id="access-by-area">
+                        地域別アクセス数グラフがここに表示されます
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>&copy; 2025 横須賀市 All Rights Reserved.</p>
+                </div>
+                <div>
+                    <p>横須賀市地域資源情報管理支援システム Ver.1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // モバイルメニューのトグル機能
+            if (window.innerWidth <= 768) {
+                const menuItems = document.querySelectorAll('.main-menu > li');
+                
+                menuItems.forEach(item => {
+                    const link = item.querySelector('a');
+                    link.addEventListener('click', function(e) {
+                        // サブメニューがある場合のみ処理
+                        if (item.querySelector('.submenu')) {
+                            e.preventDefault();
+                            item.classList.toggle('open');
+                            
+                            // 他のすべてのメニューを閉じる
+                            menuItems.forEach(otherItem => {
+                                if (otherItem !== item) {
+                                    otherItem.classList.remove('open');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Chart.jsを使用したグラフ描画（実際にはChart.jsライブラリを読み込む必要があります）
+            // ここでは、仮のコードとして示します
+            function drawCharts() {
+                // リソース分類別グラフのデータ
+                const resourceCategoryData = {
+                    labels: ['高齢者支援', '障害福祉', '子育て支援', '医療・健康', '地域活動', 'その他'],
+                    datasets: [{
+                        label: '登録件数',
+                        data: [427, 488, 124, 76, 198, 79],
+                        backgroundColor: [
+                            '#0066cc', '#4da6ff', '#ff9900', '#ffcc66', '#28a745', '#666666'
+                        ]
+                    }]
+                };
+
+                // 地域別アクセス数グラフのデータ
+                const accessByAreaData = {
+                    labels: ['中央地区', '北部地区', '南部地区', '西部地区', '東部地区'],
+                    datasets: [{
+                        label: 'アクセス数',
+                        data: [1245, 867, 743, 936, 776],
+                        backgroundColor: '#0066cc'
+                    }]
+                };
+
+                // 実際のChart.jsを使った実装の場合は以下のようにチャートを描画します
+                // 今回はライブラリが読み込まれていないため、仮の表示のみ
+                document.getElementById('resource-by-category').textContent = 'リソース分類別グラフ: ' 
+                    + resourceCategoryData.labels.join(', ');
+                document.getElementById('access-by-area').textContent = '地域別アクセス数グラフ: ' 
+                    + accessByAreaData.labels.join(', ');
+            }
+
+            // ウェルカムバナーのアクションボタン
+            const searchBtn = document.querySelector('.welcome-btn:first-child');
+            const registerBtn = document.querySelector('.welcome-btn:last-child');
+            
+            searchBtn.addEventListener('click', function() {
+                // 実際のアプリケーションでは、検索ページへの遷移処理
+                alert('資源検索ページに移動します');
+            });
+            
+            registerBtn.addEventListener('click', function() {
+                // 実際のアプリケーションでは、登録ページへの遷移処理
+                alert('資源登録ページに移動します');
+            });
+
+            // 新規お知らせ作成ボタン
+            const createAnnouncementBtn = document.querySelector('.create-announcement');
+            createAnnouncementBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 実際のアプリケーションでは、お知らせ作成モーダルを表示
+                alert('お知らせ作成フォームを表示します');
+            });
+
+            // すべてのお知らせを表示するボタン
+            const viewAllAnnouncementsBtn = document.querySelector('.announcements-card .view-all');
+            viewAllAnnouncementsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 実際のアプリケーションでは、すべてのお知らせページへ遷移
+                alert('すべてのお知らせページに移動します');
+            });
+
+            // タスク項目のクリックイベント
+            const taskItems = document.querySelectorAll('.task-item');
+            taskItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 実際のアプリケーションでは、タスク詳細ページへ遷移または詳細モーダルを表示
+                    const taskTitle = this.querySelector('.task-title').textContent;
+                    alert(`タスク「${taskTitle}」の詳細を表示します`);
+                });
+            });
+
+            // イベント項目のクリックイベント
+            const eventLinks = document.querySelectorAll('.event-title a');
+            eventLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // 実際のアプリケーションでは、イベント詳細ページへ遷移
+                    const eventTitle = this.textContent;
+                    alert(`イベント「${eventTitle}」の詳細を表示します`);
+                });
+            });
+
+            // 統計サマリーの詳細レポートリンク
+            const detailReportLink = document.querySelector('.statistics-card .card-actions a');
+            detailReportLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 実際のアプリケーションでは、詳細な統計レポートページへ遷移
+                alert('詳細な統計レポートページに移動します');
+            });
+
+            // 通知アイコンのクリックイベント
+            const notificationIcon = document.querySelector('.utility-menu li:first-child a');
+            notificationIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 実際のアプリケーションでは、通知一覧のドロップダウンを表示
+                alert('未読の通知が5件あります');
+            });
+
+            // ヘルプアイコンのクリックイベント
+            const helpIcon = document.querySelector('.utility-menu li:last-child a');
+            helpIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 実際のアプリケーションでは、ヘルプページへ遷移またはヘルプモーダルを表示
+                alert('ヘルプページに移動します');
+            });
+
+            // ログアウトボタンのクリックイベント
+            const logoutBtn = document.querySelector('.logout-btn');
+            logoutBtn.addEventListener('click', function() {
+                // 実際のアプリケーションでは、ログアウト処理を実行
+                if (confirm('システムからログアウトしますか？')) {
+                    alert('ログアウトしました。ログイン画面に戻ります。');
+                    // location.href = 'login.html'; // 実際のログインページへのリダイレクト
+                }
+            });
+
+            // グラフの描画（仮実装）
+            drawCharts();
+
+            // ウィンドウサイズ変更時のレスポンシブ対応
+            window.addEventListener('resize', function() {
+                // メニュー表示の調整
+                const menuItems = document.querySelectorAll('.main-menu > li');
+                if (window.innerWidth <= 768) {
+                    // モバイル表示時
+                    menuItems.forEach(item => {
+                        item.classList.remove('open');
+                    });
+                }
+            });
+
+            // 未更新資源のシミュレーション（実際のアプリケーションではデータベースから取得）
+            simulateResourceUpdates();
+        });
+
+        // 未更新資源の更新を促すシミュレーション関数
+        function simulateResourceUpdates() {
+            // 実際のアプリケーションでは、定期的にAPIやデータベースをチェックして
+            // 更新が必要な資源を検出し、通知する処理を実装
+            
+            // この例では、3秒後に未更新資源の通知をシミュレート
+            setTimeout(function() {
+                const notifications = document.querySelector('.notification-badge');
+                notifications.textContent = parseInt(notifications.textContent) + 1;
+                
+                // 実際のアプリケーションでは、ブラウザ通知APIを使用して通知を表示
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    const notification = new Notification('未更新資源の確認', {
+                        body: '3ヶ月以上更新されていない資源が6件あります。確認してください。',
+                        icon: '/api/placeholder/50/50'
+                    });
+                    
+                    notification.onclick = function() {
+                        // 通知がクリックされたときの処理
+                        alert('未更新資源一覧ページに移動します');
+                    };
+                }
+            }, 3000);
+        }

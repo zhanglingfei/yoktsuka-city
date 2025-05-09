@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>横須賀市地域資源情報管理支援システム - 資源検索</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #004080;
+            --accent-color: #ff9900;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --text-color: #333333;
+            --white: #ffffff;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            color: var(--secondary-color);
+        }
+
+        .staff-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .staff-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .staff-details {
+            margin-right: 15px;
+        }
+
+        .staff-name {
+            font-weight: bold;
+        }
+
+        .staff-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .logout-btn {
+            background-color: var(--light-gray);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--medium-gray);
+        }
+
+        /* ナビゲーション */
+        nav {
+            background-color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .main-menu li {
+            position: relative;
+        }
+
+        .main-menu a {
+            color: var(--white);
+            display: block;
+            padding: 15px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .main-menu a:hover, .main-menu a.active {
+            background-color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-menu a i {
+            margin-right: 8px;
+        }
+
+        .submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 220px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            list-style: none;
+            display: none;
+            z-index: 10;
+        }
+
+        .submenu a {
+            color: var(--text-color);
+            padding: 10px 15px;
+            font-weight: normal;
+        }
+
+        .submenu a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+
+        .main-menu li:hover .submenu {
+            display: block;
+        }
+
+        .utility-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .utility-menu a {
+            color: var(--white);
+            display: block;
+            padding: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .utility-menu a:hover {
+            background-color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .notification-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            font-size: 0.7rem;
+            line-height: 18px;
+            margin-left: 5px;
+        }
+
+        /* ページタイトル */
+        .page-title {
+            margin: 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .page-title h2 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        /* 検索フォーム */
+        .search-container {
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group.full-width {
+            grid-column: span 3;
+        }
+
+        .search-button-group {
+            grid-column: span 3;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .search-btn i {
+            margin-right: 5px;
+        }
+
+        .reset-btn {
+            background-color: var(--medium-gray);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .reset-btn:hover {
+            background-color: #c0c0c0;
+        }
+
+        .save-search-btn {
+            background-color: var(--accent-color);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .save-search-btn:hover {
+            background-color: #e68a00;
+        }
+
+        .advanced-search-toggle {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .advanced-search-toggle i {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+
+        .advanced-search-toggle.open i {
+            transform: rotate(180deg);
+        }
+
+        .advanced-search-options {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .advanced-search-options.show {
+            display: block;
+        }
+
+        /* 検索結果表示オプション */
+        .result-display-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            padding: 15px 20px;
+        }
+
+        .view-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .view-toggle-btn {
+            background-color: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .view-toggle-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .view-toggle-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        .view-toggle-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .view-toggle-btn i {
+            margin-right: 5px;
+        }
+
+        .result-sort {
+            display: flex;
+            align-items: center;
+        }
+
+        .result-sort label {
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .result-sort select {
+            padding: 8px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .result-export {
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-btn {
+            background-color: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .export-btn:hover {
+            background-color: var(--medium-gray);
+        }
+
+        .export-btn i {
+            margin-right: 5px;
+        }
+
+        /* 検索結果エリア */
+        .search-results {
+            margin-bottom: 30px;
+        }
+
+        /* リスト表示 */
+        .resource-list {
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .resource-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--medium-gray);
+            transition: background-color 0.3s;
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .resource-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .resource-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .resource-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .resource-location,
+        .resource-phone,
+        .resource-update {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .resource-location i,
+        .resource-phone i,
+        .resource-update i {
+            margin-right: 5px;
+        }
+
+        .resource-vacancy {
+            background-color: var(--success-color);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .resource-no-vacancy {
+            background-color: var(--danger-color);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .resource-btn {
+            padding: 5px 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .resource-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .resource-btn i {
+            margin-right: 5px;
+        }
+
+        /* マップ表示 */
+        .map-view {
+            display: none;
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            height: 600px;
+            position: relative;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .map-info-window {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 15px;
+            z-index: 5;
+            display: none;
+        }
+
+        .map-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .map-info-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .map-info-close {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .map-info-content {
+            font-size: 0.9rem;
+        }
+
+        .map-info-actions {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .map-filter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 15px;
+            z-index: 5;
+        }
+
+        .map-filter-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .map-filter-list {
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+        .map-filter-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .map-filter-item input {
+            margin-right: 8px;
+        }
+
+        .map-filter-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        /* ページネーション */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pagination-list {
+            display: flex;
+            list-style: none;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .pagination-item {
+            border-right: 1px solid var(--medium-gray);
+        }
+
+        .pagination-item:last-child {
+            border-right: none;
+        }
+
+        .pagination-link {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            background-color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .pagination-link:hover {
+            background-color: var(--light-gray);
+            text-decoration: none;
+        }
+
+        .pagination-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .pagination-link.disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        /* No Results */
+        .no-results {
+            background-color: var(--white);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            color: var(--medium-gray);
+            margin-bottom: 20px;
+        }
+
+        .no-results-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .no-results-message {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .suggestion-list {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .suggestion-item {
+            margin-bottom: 10px;
+        }
+
+        /* フッター */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .result-display-options {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .view-toggle {
+                width: 100%;
+            }
+
+            .view-toggle-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .result-sort {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .result-export {
+                width: 100%;
+            }
+
+            .export-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .main-menu, .utility-menu {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .submenu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+            }
+
+            .main-menu li:hover .submenu {
+                display: none;
+            }
+
+            .main-menu li.open .submenu {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="yokosuka-city.png" alt="横須賀市ロゴ">
+                    <h1>横須賀市地域資源情報管理支援システム</h1>
+                </div>
+                <div class="staff-info">
+                    <div class="staff-avatar">YT</div>
+                    <div class="staff-details">
+                        <div class="staff-name">山田 太郎</div>
+                        <div class="staff-role">地域福祉課</div>
+                    </div>
+                    <button class="logout-btn">ログアウト</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <ul class="main-menu">
+                    <li>
+                        <li><a href="yokosuka-staff-dashboard.html" class="active">ホーム</a></li>
+                    </li>
+                    <li>
+                        <a href="#" class="active"><i class="fas fa-database"></i> 資源管理</a>
+                        <ul class="submenu">
+                            <li><a href="yokosuka-resource-search.html">資源検索</a></li>
+                            <li><a href="#">資源登録・編集</a></li>
+                            <li><a href="#">一括インポート・エクスポート</a></li>
+                            <li><a href="#">情報審査</a></li>
+                            <li><a href="#">アクセス記録</a></li>
+                            <li><a href="#">未更新資源管理</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chart-bar"></i> データ統計</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-comments"></i> コミュニケーション</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-calendar-alt"></i> 活動管理</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-cog"></i> システム管理</a>
+                    </li>
+                </ul>
+
+                <ul class="utility-menu">
+                    <li><a href="#" title="通知"><i class="fas fa-bell"></i><span class="notification-badge">5</span></a></li>
+                    <li><a href="#" title="ヘルプ"><i class="fas fa-question-circle"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title">
+            <h2><i class="fas fa-search"></i> 地域資源検索</h2>
+        </div>
+
+        <div class="search-container">
+            <form class="search-form" id="resource-search-form">
+                <div class="form-group">
+                    <label for="keyword">キーワード</label>
+                    <input type="text" id="keyword" name="keyword" placeholder="施設名・サービス内容など">
+                </div>
+                <div class="form-group">
+                    <label for="category">カテゴリ</label>
+                    <select id="category" name="category">
+                        <option value="">すべてのカテゴリ</option>
+                        <option value="elderly">高齢者支援</option>
+                        <option value="disability">障害福祉</option>
+                        <option value="childcare">子育て支援</option>
+                        <option value="medical">医療・健康</option>
+                        <option value="community">地域活動</option>
+                        <option value="welfare">福祉サービス</option>
+                        <option value="nursing">介護サービス</option>
+                        <option value="consultation">相談窓口</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="area">地域</label>
+                    <select id="area" name="area">
+                        <option value="">すべての地域</option>
+                        <option value="central">中央地区</option>
+                        <option value="north">北部地区</option>
+                        <option value="south">南部地区</option>
+                        <option value="west">西部地区</option>
+                        <option value="east">東部地区</option>
+                    </select>
+                </div>
+                <div class="advanced-search-toggle">
+                    詳細検索オプション <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="advanced-search-options">
+                    <div class="form-group">
+                        <label for="address">住所</label>
+                        <input type="text" id="address" name="address" placeholder="住所や目印となる場所">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">サービス名</label>
+                        <input type="text" id="service" name="service" placeholder="具体的なサービス名">
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancy">空き状況</label>
+                        <select id="vacancy" name="vacancy">
+                            <option value="">指定なし</option>
+                            <option value="available">空きあり</option>
+                            <option value="unavailable">空きなし</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="distance">現在地からの距離</label>
+                        <select id="distance" name="distance">
+                            <option value="">指定なし</option>
+                            <option value="500">500m以内</option>
+                            <option value="1000">1km以内</option>
+                            <option value="3000">3km以内</option>
+                            <option value="5000">5km以内</option>
+                            <option value="10000">10km以内</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-updated">最終更新日</label>
+                        <select id="last-updated" name="last-updated">
+                            <option value="">指定なし</option>
+                            <option value="7">1週間以内</option>
+                            <option value="30">1ヶ月以内</option>
+                            <option value="90">3ヶ月以内</option>
+                            <option value="180">6ヶ月以内</option>
+                            <option value="365">1年以内</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manager">管理担当者</label>
+                        <input type="text" id="manager" name="manager" placeholder="管理担当者名">
+                    </div>
+                </div>
+                <div class="search-button-group">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i> 検索</button>
+                    <button type="reset" class="reset-btn">リセット</button>
+                    <button type="button" class="save-search-btn"><i class="fas fa-save"></i> 検索条件を保存</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="result-display-options">
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" id="list-view-btn"><i class="fas fa-list"></i> リスト表示</button>
+                <button class="view-toggle-btn" id="map-view-btn"><i class="fas fa-map-marked-alt"></i> マップ表示</button>
+            </div>
+            <div class="result-sort">
+                <label for="sort-by">並び替え:</label>
+                <select id="sort-by" name="sort-by">
+                    <option value="relevance">関連性</option>
+                    <option value="name-asc">名前（昇順）</option>
+                    <option value="name-desc">名前（降順）</option>
+                    <option value="updated-desc">更新日（新しい順）</option>
+                    <option value="updated-asc">更新日（古い順）</option>
+                    <option value="distance">距離（近い順）</option>
+                </select>
+            </div>
+            <div class="result-export">
+                <button class="export-btn"><i class="fas fa-file-excel"></i> Excel</button>
+                <button class="export-btn"><i class="fas fa-print"></i> 印刷</button>
+                <button class="export-btn"><i class="fas fa-share-alt"></i> 共有</button>
+            </div>
+        </div>
+
+        <div class="search-results">
+            <div class="resource-list" id="resource-list-view">
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <div class="resource-title">横須賀シニアサポートセンター</div>
+                        <div class="resource-vacancy">空きあり</div>
+                    </div>
+                    <div class="resource-meta">
+                        <span class="resource-type">高齢者支援</span>
+                        <span class="resource-location"><i class="fas fa-map-marker-alt"></i> 横須賀市小川町11-5</span>
+                        <span class="resource-phone"><i class="fas fa-phone"></i> 046-XXX-XXXX</span>
+                        <span class="resource-update"><i class="fas fa-clock"></i> 更新日: 2025年5月8日</span>
+                    </div>
+                    <p>高齢者の日常生活支援、介護予防、認知症予防などのサービスを提供しています。地域の高齢者が安心して暮らせるようサポートします。</p>
+                    <div class="resource-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-edit"></i> 編集</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-comment"></i> コメント</a>
+                    </div>
+                </div>
+
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <div class="resource-title">ウェルビーイング横須賀</div>
+                        <div class="resource-vacancy">空きあり</div>
+                    </div>
+                    <div class="resource-meta">
+                        <span class="resource-type">障害福祉</span>
+                        <span class="resource-location"><i class="fas fa-map-marker-alt"></i> 横須賀市汐入町3-17</span>
+                        <span class="resource-phone"><i class="fas fa-phone"></i> 046-XXX-XXXX</span>
+                        <span class="resource-update"><i class="fas fa-clock"></i> 更新日: 2025年5月7日</span>
+                    </div>
+                    <p>障害のある方々の自立支援、生活介護、就労支援などのサービスを提供しています。専門スタッフによる個別支援プログラムを実施しています。</p>
+                    <div class="resource-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-edit"></i> 編集</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-comment"></i> コメント</a>
+                    </div>
+                </div>
+
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <div class="resource-title">よこすか子育てプラザ</div>
+                        <div class="resource-vacancy">空きあり</div>
+                    </div>
+                    <div class="resource-meta">
+                        <span class="resource-type">子育て支援</span>
+                        <span class="resource-location"><i class="fas fa-map-marker-alt"></i> 横須賀市本町2-8</span>
+                        <span class="resource-phone"><i class="fas fa-phone"></i> 046-XXX-XXXX</span>
+                        <span class="resource-update"><i class="fas fa-clock"></i> 更新日: 2025年5月6日</span>
+                    </div>
+                    <p>子育て中の親子が集い、交流できる場を提供しています。育児相談、子育てセミナー、親子イベントなども定期的に開催しています。</p>
+                    <div class="resource-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-edit"></i> 編集</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-comment"></i> コメント</a>
+                    </div>
+                </div>
+
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <div class="resource-title">ケアホーム三笠</div>
+                        <div class="resource-no-vacancy">空きなし</div>
+                    </div>
+                    <div class="resource-meta">
+                        <span class="resource-type">介護サービス</span>
+                        <span class="resource-location"><i class="fas fa-map-marker-alt"></i> 横須賀市三笠町6-21</span>
+                        <span class="resource-phone"><i class="fas fa-phone"></i> 046-XXX-XXXX</span>
+                        <span class="resource-update"><i class="fas fa-clock"></i> 更新日: 2025年5月5日</span>
+                    </div>
+                    <p>24時間体制の介護サービスを提供する介護付き高齢者住宅です。専門スタッフによる充実したケアプランを実施しています。</p>
+                    <div class="resource-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-edit"></i> 編集</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-comment"></i> コメント</a>
+                    </div>
+                </div>
+
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <div class="resource-title">横須賀市中央地域包括支援センター</div>
+                        <div class="resource-vacancy">空きあり</div>
+                    </div>
+                    <div class="resource-meta">
+                        <span class="resource-type">高齢者支援</span>
+                        <span class="resource-location"><i class="fas fa-map-marker-alt"></i> 横須賀市日の出町1-5</span>
+                        <span class="resource-phone"><i class="fas fa-phone"></i> 046-XXX-XXXX</span>
+                        <span class="resource-update"><i class="fas fa-clock"></i> 更新日: 2025年5月4日</span>
+                    </div>
+                    <p>高齢者の総合相談窓口として、介護予防ケアマネジメントや権利擁護など、さまざまな支援を行っています。</p>
+                    <div class="resource-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-edit"></i> 編集</a>
+                        <a href="#" class="resource-btn"><i class="fas fa-comment"></i> コメント</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-view" id="resource-map-view">
+                <div class="map-container" id="map">
+                    <!-- GoogleマップAPIを使用して地図を表示 -->
+                    <img src="/api/placeholder/1160/600" alt="地図表示プレースホルダー">
+                </div>
+                <div class="map-info-window" id="map-info-window">
+                    <div class="map-info-header">
+                        <div class="map-info-title">横須賀シニアサポートセンター</div>
+                        <button class="map-info-close">&times;</button>
+                    </div>
+                    <div class="map-info-content">
+                        <p><strong>カテゴリ:</strong> 高齢者支援</p>
+                        <p><strong>住所:</strong> 横須賀市小川町11-5</p>
+                        <p><strong>電話番号:</strong> 046-XXX-XXXX</p>
+                        <p><strong>空き状況:</strong> <span style="color: #28a745;">空きあり</span></p>
+                    </div>
+                    <div class="map-info-actions">
+                        <a href="#" class="resource-btn"><i class="fas fa-info-circle"></i> 詳細</a>
+                    </div>
+                </div>
+                <div class="map-filter">
+                    <div class="map-filter-title">カテゴリ表示</div>
+                    <ul class="map-filter-list">
+                        <li class="map-filter-item">
+                            <input type="checkbox" id="filter-elderly" checked>
+                            <label for="filter-elderly"><span class="map-filter-color" style="background-color: #0066cc;"></span>高齢者支援</label>
+                        </li>
+                        <li class="map-filter-item">
+                            <input type="checkbox" id="filter-disability" checked>
+                            <label for="filter-disability"><span class="map-filter-color" style="background-color: #4da6ff;"></span>障害福祉</label>
+                        </li>
+                        <li class="map-filter-item">
+                            <input type="checkbox" id="filter-childcare" checked>
+                            <label for="filter-childcare"><span class="map-filter-color" style="background-color: #ff9900;"></span>子育て支援</label>
+                        </li>
+                        <li class="map-filter-item">
+                            <input type="checkbox" id="filter-medical" checked>
+                            <label for="filter-medical"><span class="map-filter-color" style="background-color: #ffcc66;"></span>医療・健康</label>
+                        </li>
+                        <li class="map-filter-item">
+                            <input type="checkbox" id="filter-community" checked>
+                            <label for="filter-community"><span class="map-filter-color" style="background-color: #28a745;"></span>地域活動</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="no-results" id="no-results-view">
+                <div class="no-results-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 class="no-results-title">検索結果が見つかりませんでした</h3>
+                <p class="no-results-message">検索条件を変更して、再度お試しください。</p>
+                <div class="suggestion-list">
+                    <p><strong>検索のヒント:</strong></p>
+                    <ul>
+                        <li class="suggestion-item">キーワードを短くするか、別の言葉で試してみてください</li>
+                        <li class="suggestion-item">地域やカテゴリを変更してみてください</li>
+                        <li class="suggestion-item">詳細検索オプションのフィルタを減らしてみてください</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <ul class="pagination-list">
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link disabled"><i class="fas fa-chevron-left"></i> 前へ</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link active">1</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link">2</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link">3</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link">4</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link">5</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="#" class="pagination-link">次へ <i class="fas fa-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>&copy; 2025 横須賀市 All Rights Reserved.</p>
+                </div>
+                <div>
+                    <p>横須賀市地域資源情報管理支援システム Ver.1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 詳細検索オプションの表示/非表示切り替え
+            const advancedSearchToggle = document.querySelector('.advanced-search-toggle');
+            const advancedSearchOptions = document.querySelector('.advanced-search-options');
+            
+            advancedSearchToggle.addEventListener('click', function() {
+                advancedSearchOptions.classList.toggle('show');
+                this.classList.toggle('open');
+            });
+
+            // リスト表示/マップ表示の切り替え
+            const listViewBtn = document.getElementById('list-view-btn');
+            const mapViewBtn = document.getElementById('map-view-btn');
+            const resourceListView = document.getElementById('resource-list-view');
+            const resourceMapView = document.getElementById('resource-map-view');
+            
+            listViewBtn.addEventListener('click', function() {
+                listViewBtn.classList.add('active');
+                mapViewBtn.classList.remove('active');
+                resourceListView.style.display = 'block';
+                resourceMapView.style.display = 'none';
+            });
+            
+            mapViewBtn.addEventListener('click', function() {
+                mapViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+                resourceMapView.style.display = 'block';
+                resourceListView.style.display = 'none';
+
+                // 実際のアプリケーションでは、ここでマップを初期化または再描画
+                initMap();
+            });
+
+            // マップ情報ウィンドウの表示/非表示
+            const mapInfoWindow = document.getElementById('map-info-window');
+            const mapInfoCloseBtn = document.querySelector('.map-info-close');
+            
+            // マップマーカーのクリックをシミュレート
+            document.getElementById('map').addEventListener('click', function() {
+                mapInfoWindow.style.display = 'block';
+            });
+            
+            mapInfoCloseBtn.addEventListener('click', function() {
+                mapInfoWindow.style.display = 'none';
+            });
+
+            // 検索フォームの送信処理
+            const searchForm = document.getElementById('resource-search-form');
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 実際のアプリケーションでは、ここでAPIリクエストを送信して検索結果を取得
+                // この例では、単にページをスクロールして検索結果を表示
+                document.querySelector('.result-display-options').scrollIntoView({ behavior: 'smooth' });
+                
+                // 検索結果があるかどうかの条件分岐（この例では常に結果があると仮定）
+                const noResultsView = document.getElementById('no-results-view');
+                noResultsView.style.display = 'none';
+                resourceListView.style.display = 'block';
+            });
+
+            // 検索条件を保存ボタンのクリックイベント
+            const saveSearchBtn = document.querySelector('.save-search-btn');
+            saveSearchBtn.addEventListener('click', function() {
+                // 実際のアプリケーションでは、ここで検索条件を保存するダイアログを表示
+                const searchName = prompt('この検索条件に名前を付けて保存します：', '新しい検索条件');
+                if (searchName) {
+                    alert(`「${searchName}」として検索条件を保存しました。`);
+                }
+            });
+
+            // エクスポートボタンのクリックイベント
+            const exportBtns = document.querySelectorAll('.export-btn');
+            exportBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const format = this.textContent.trim();
+                    alert(`検索結果を${format}形式でエクスポートします。`);
+                });
+            });
+
+            // 並び替え選択の変更イベント
+            const sortSelect = document.getElementById('sort-by');
+            sortSelect.addEventListener('change', function() {
+                // 実際のアプリケーションでは、ここで検索結果を並び替え
+                alert(`検索結果を「${this.options[this.selectedIndex].text}」で並び替えます。`);
+            });
+
+            // ページネーションのクリックイベント
+            const paginationLinks = document.querySelectorAll('.pagination-link:not(.disabled)');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // アクティブページの切り替え
+                    document.querySelector('.pagination-link.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    // 実際のアプリケーションでは、ここでページングAPIリクエストを送信
+                    window.scrollTo({
+                        top: document.querySelector('.result-display-options').offsetTop,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // カテゴリフィルターのチェックボックス変更イベント
+            const categoryFilters = document.querySelectorAll('.map-filter-item input');
+            categoryFilters.forEach(filter => {
+                filter.addEventListener('change', function() {
+                    // 実際のアプリケーションでは、ここでマップ上のマーカーの表示/非表示を切り替え
+                    const categoryName = this.id.replace('filter-', '');
+                    if (this.checked) {
+                        console.log(`カテゴリ「${categoryName}」を表示します`);
+                    } else {
+                        console.log(`カテゴリ「${categoryName}」を非表示にします`);
+                    }
+                });
+            });
+
+            // リソース詳細ボタンのクリックイベント
+            const detailBtns = document.querySelectorAll('.resource-btn');
+            detailBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = this.textContent.trim();
+                    const resourceTitle = this.closest('.resource-item').querySelector('.resource-title').textContent;
+                    alert(`「${resourceTitle}」の${action}画面に移動します。`);
+                });
+            });
+
+            // GoogleマップAPIの初期化（仮実装）
+            function initMap() {
+                // 実際のアプリケーションでは、ここでGoogleマップの初期化コードを記述
+                console.log('マップを初期化します');
+                
+                // この例では単に情報ウィンドウを表示して動作をシミュレート
+                setTimeout(() => {
+                    mapInfoWindow.style.display = 'block';
+                }, 500);
+            }
+
+            // モバイルメニューのトグル機能
+            if (window.innerWidth <= 768) {
+                const menuItems = document.querySelectorAll('.main-menu > li');
+                
+                menuItems.forEach(item => {
+                    const link = item.querySelector('a');
+                    link.addEventListener('click', function(e) {
+                        // サブメニューがある場合のみ処理
+                        if (item.querySelector('.submenu')) {
+                            e.preventDefault();
+                            item.classList.toggle('open');
+                            
+                            // 他のすべてのメニューを閉じる
+                            menuItems.forEach(otherItem => {
+                                if (otherItem !== item) {
+                                    otherItem.classList.remove('open');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
